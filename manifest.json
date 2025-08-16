@@ -1,0 +1,20 @@
+{
+	"manifest_version": 3,
+	"name": "2X Speed",
+	"description": "An extension that instantly speeds up a youtube video playback at the press of a button.",
+	"version": "1.0",
+	"permissions": ["scripting", "tabs"],
+	"host_permissions": ["https://www.youtube.com/*"],
+
+	"content_scripts": [
+		{
+			"matches": ["https://www.youtube.com/*"],
+			"css": ["style.css"],
+			"js": ["content.js", "popup.js"]
+		}
+	],
+	"action": {
+		"default_popup": "index.html",
+		"default_icon": "yaaaa.png"
+	}
+}
