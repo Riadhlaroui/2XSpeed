@@ -25,7 +25,7 @@ function showBanner(text) {
 }
 
 function setupSpeedBoostKey() {
-	const targetKey = "v";
+	const targetKey = "b";
 
 	document.addEventListener("keydown", (e) => {
 		const tag = document.activeElement.tagName.toLowerCase();
