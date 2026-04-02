@@ -1,38 +1,368 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="stylesheet" href="style.css" />
-		<script src="popup.js" defer></script>
-		<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+		<style>
+			@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap");
+
+			*,
+			*::before,
+			*::after {
+				box-sizing: border-box;
+				margin: 0;
+				padding: 0;
+			}
+
+			:root {
+				--bg: #0e0e10;
+				--surface: #1a1a1f;
+				--border: #2a2a32;
+				--accent: #c8f135;
+				--accent-dim: rgba(200, 241, 53, 0.12);
+				--text: #f0f0f0;
+				--muted: #666;
+				--danger: #ff4d4d;
+			}
+
+			body {
+				width: 320px;
+				background: var(--bg);
+				font-family: "Syne", sans-serif;
+				color: var(--text);
+				padding: 0;
+				overflow: hidden;
+			}
+
+			/* ── Header ── */
+			.header {
+				padding: 20px 20px 16px;
+				border-bottom: 1px solid var(--border);
+				display: flex;
+				align-items: center;
+				gap: 12px;
+			}
+
+			.logo {
+				width: 36px;
+				height: 36px;
+				background: var(--accent);
+				border-radius: 8px;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				flex-shrink: 0;
+			}
+
+			.logo svg {
+				width: 20px;
+				height: 20px;
+			}
+
+			.header-text h1 {
+				font-size: 15px;
+				font-weight: 800;
+				letter-spacing: 0.04em;
+				color: var(--text);
+				line-height: 1;
+			}
+
+			.header-text p {
+				font-size: 11px;
+				color: var(--muted);
+				margin-top: 3px;
+				font-family: "Space Mono", monospace;
+			}
+
+			/* ── Body ── */
+			.body {
+				padding: 20px;
+				display: flex;
+				flex-direction: column;
+				gap: 16px;
+			}
+
+			/* ── Speed display ── */
+			.speed-card {
+				background: var(--accent-dim);
+				border: 1px solid rgba(200, 241, 53, 0.25);
+				border-radius: 10px;
+				padding: 14px 16px;
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.speed-label {
+				font-size: 11px;
+				font-family: "Space Mono", monospace;
+				color: var(--accent);
+				letter-spacing: 0.08em;
+				text-transform: uppercase;
+			}
+
+			.speed-value {
+				font-size: 28px;
+				font-weight: 800;
+				color: var(--accent);
+				line-height: 1;
+				font-family: "Space Mono", monospace;
+			}
+
+			.speed-sub {
+				font-size: 11px;
+				color: var(--muted);
+				margin-top: 2px;
+			}
+
+			/* ── Key binding section ── */
+			.section-label {
+				font-size: 10px;
+				font-family: "Space Mono", monospace;
+				color: var(--muted);
+				letter-spacing: 0.1em;
+				text-transform: uppercase;
+				margin-bottom: 8px;
+			}
+
+			.key-row {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.key-display {
+				flex: 1;
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 8px;
+				padding: 12px 14px;
+				display: flex;
+				align-items: center;
+				gap: 10px;
+			}
+
+			.key-badge {
+				background: var(--bg);
+				border: 1.5px solid var(--border);
+				border-bottom-width: 3px;
+				border-radius: 6px;
+				padding: 4px 10px;
+				font-family: "Space Mono", monospace;
+				font-size: 15px;
+				font-weight: 700;
+				color: var(--text);
+				min-width: 38px;
+				text-align: center;
+				text-transform: uppercase;
+				transition:
+					border-color 0.2s,
+					color 0.2s;
+			}
+
+			.key-badge.listening {
+				border-color: var(--accent);
+				color: var(--accent);
+				animation: pulse-border 0.8s ease-in-out infinite alternate;
+			}
+
+			@keyframes pulse-border {
+				from {
+					border-color: var(--accent);
+					box-shadow: 0 0 0 0 rgba(200, 241, 53, 0.3);
+				}
+				to {
+					border-color: var(--accent);
+					box-shadow: 0 0 0 4px rgba(200, 241, 53, 0.05);
+				}
+			}
+
+			.key-hint {
+				font-size: 11px;
+				color: var(--muted);
+				font-family: "Space Mono", monospace;
+			}
+
+			.key-hint.listening-text {
+				color: var(--accent);
+			}
+
+			.btn-change {
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 8px;
+				padding: 10px 14px;
+				color: var(--text);
+				font-family: "Syne", sans-serif;
+				font-size: 12px;
+				font-weight: 600;
+				cursor: pointer;
+				transition:
+					background 0.15s,
+					border-color 0.15s,
+					color 0.15s;
+				white-space: nowrap;
+			}
+
+			.btn-change:hover {
+				background: var(--border);
+				border-color: #444;
+			}
+
+			.btn-change.cancel {
+				color: var(--danger);
+				border-color: rgba(255, 77, 77, 0.4);
+			}
+
+			.btn-change.cancel:hover {
+				background: rgba(255, 77, 77, 0.08);
+			}
+
+			/* ── How to use ── */
+			.how-to {
+				background: var(--surface);
+				border: 1px solid var(--border);
+				border-radius: 10px;
+				padding: 14px 16px;
+			}
+
+			.steps {
+				display: flex;
+				flex-direction: column;
+				gap: 8px;
+				margin-top: 10px;
+			}
+
+			.step {
+				display: flex;
+				align-items: center;
+				gap: 10px;
+				font-size: 12px;
+				color: #aaa;
+			}
+
+			.step-num {
+				width: 20px;
+				height: 20px;
+				border-radius: 50%;
+				background: var(--border);
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-family: "Space Mono", monospace;
+				font-size: 10px;
+				font-weight: 700;
+				color: var(--muted);
+				flex-shrink: 0;
+			}
+
+			/* ── Footer ── */
+			.footer {
+				padding: 12px 20px;
+				border-top: 1px solid var(--border);
+				display: flex;
+				align-items: center;
+				justify-content: space-between;
+			}
+
+			.status-dot {
+				width: 7px;
+				height: 7px;
+				border-radius: 50%;
+				background: var(--accent);
+				box-shadow: 0 0 6px var(--accent);
+				animation: blink 2s ease-in-out infinite;
+			}
+
+			@keyframes blink {
+				0%,
+				100% {
+					opacity: 1;
+				}
+				50% {
+					opacity: 0.3;
+				}
+			}
+
+			.status-text {
+				font-size: 11px;
+				font-family: "Space Mono", monospace;
+				color: var(--muted);
+				display: flex;
+				align-items: center;
+				gap: 7px;
+			}
+
+			.version {
+				font-size: 10px;
+				font-family: "Space Mono", monospace;
+				color: #333;
+			}
+		</style>
 	</head>
 	<body>
-		<div class="container">
-			<span class="title">2X speed</span>
-
-			<p
-				style="
-					font-size: 16px;
-					color: #6b6a6a;
-					margin-top: 10px;
-					text-align: center;
-				"
-			>
-				Press
-				<kbd
-					style="
-						background-color: #eee;
-						border: 1px solid #ccc;
-						border-radius: 4px;
-						padding: 2px 6px;
-						font-size: 16px;
-						font-weight: 600;
-						color: #0b0808;
-					"
-					>B</kbd
-				>
-				on your keyboard to activate the extension
-			</p>
+		<div class="header">
+			<div class="logo">
+				<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<polygon points="5,3 19,12 5,21" fill="#0e0e10" />
+					<polygon points="13,3 27,12 13,21" fill="#0e0e10" opacity="0.5" />
+				</svg>
+			</div>
+			<div class="header-text">
+				<h1>2X SPEED</h1>
+				<p>video speed booster</p>
+			</div>
 		</div>
+
+		<div class="body">
+			<!-- Speed card -->
+			<div class="speed-card">
+				<div>
+					<div class="speed-label">Boost speed</div>
+					<div class="speed-sub">hold key to activate</div>
+				</div>
+				<div class="speed-value">2×</div>
+			</div>
+
+			<!-- Key binding -->
+			<div>
+				<div class="section-label">Hotkey binding</div>
+				<div class="key-row">
+					<div class="key-display">
+						<div class="key-badge" id="keyBadge">B</div>
+						<span class="key-hint" id="keyHint">hold to speed up</span>
+					</div>
+					<button class="btn-change" id="btnChange">Change</button>
+				</div>
+			</div>
+
+			<!-- How to use -->
+			<div class="how-to">
+				<div class="section-label">How it works</div>
+				<div class="steps">
+					<div class="step">
+						<div class="step-num">1</div>
+						Open any page with a video
+					</div>
+					<div class="step">
+						<div class="step-num">2</div>
+						<span>Hold your hotkey video jumps to 2X speed </span>
+					</div>
+					<div class="step">
+						<div class="step-num">3</div>
+						Release to return to normal speed
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="footer">
+			<span class="status-text">
+				<span class="status-dot"></span>
+				active on all tabs
+			</span>
+			<span class="version">v1.0</span>
+		</div>
+
+		<script src="popup.js"></script>
 	</body>
 </html>
